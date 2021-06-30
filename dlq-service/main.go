@@ -11,25 +11,40 @@ import (
 	"strconv"
 	"strings"
 	"syscall"
+	"time"
 
+	"github.com/Shopify/sarama"
 	"github.com/gorilla/mux"
 	_ "github.com/joho/godotenv/autoload" // for development
 	"github.com/sangianpatrick/go-kafka-dlq-demo/dlq-service/controller"
+	"github.com/sangianpatrick/go-kafka-dlq-demo/dlq-service/eventbus"
+	"github.com/sangianpatrick/go-kafka-dlq-demo/dlq-service/eventhandler"
 	"github.com/sangianpatrick/go-kafka-dlq-demo/dlq-service/mongodb"
 	"github.com/sangianpatrick/go-kafka-dlq-demo/dlq-service/repository"
 	"github.com/sangianpatrick/go-kafka-dlq-demo/dlq-service/usecase"
 	"github.com/sirupsen/logrus"
+	"go.elastic.co/apm"
 	"go.elastic.co/apm/module/apmgorilla"
 	"go.elastic.co/apm/module/apmlogrus"
+	"go.elastic.co/apm/module/apmmongo"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
+
+var (
+	tracer *apm.Tracer
+)
+
+func init() {
+	tracer = apm.DefaultTracer
+}
 
 func main() {
 	serviceName := os.Getenv("SERVICE_NAME")
 	servicePort, _ := strconv.Atoi(os.Getenv("SERVICE_PORT"))
 	mongodbURL := os.Getenv("MONGODB_URL")
 	mongodbDatabase := os.Getenv("MONGODB_DATABASE")
+	kafkaBrokers := strings.Split(os.Getenv("KAFKA_BROKERS"), ",")
 
 	logger := logrus.New()
 	logger.SetFormatter(&logrus.JSONFormatter{
@@ -49,7 +64,10 @@ func main() {
 	mongodbClient, err := mongo.NewClient(
 		options.Client().
 			SetAppName(serviceName).
-			ApplyURI(mongodbURL))
+			ApplyURI(mongodbURL).
+			SetConnectTimeout(time.Second * 10).
+			SetMonitor(apmmongo.CommandMonitor()),
+	)
 
 	if err != nil {
 		logger.Fatal(err)
@@ -69,6 +87,19 @@ func main() {
 	dlqUsecase := usecase.NewDLQUsecase(logger, dlqRepository)
 	controller.InitDLQController(logger, router, dlqUsecase)
 
+	consumerGroupClient, err := sarama.NewConsumerGroup(kafkaBrokers, serviceName, sarama.NewConfig())
+	if err != nil {
+		logger.Fatal(err)
+	}
+	consumerGroupHandler := eventbus.NewDefaultSaramaConsumerGroupHandler(tracer, serviceName, eventhandler.NewDLQEventHandler(logger, dlqUsecase), nil)
+	subscriber := eventbus.NewSaramaKafkaConsumserGroupAdapter(
+		logger, &eventbus.SaramaKafkaConsumserGroupAdapterConfig{
+			ConsumerGroupClient:  consumerGroupClient,
+			ConsumerGroupHandler: consumerGroupHandler,
+			Topics:               []string{"dead-letter-queue"},
+		})
+	subscriber.Subscribe()
+
 	httpServer := &http.Server{
 		Addr:    fmt.Sprintf(":%d", servicePort),
 		Handler: router,
@@ -84,5 +115,6 @@ func main() {
 	<-sigterm
 
 	httpServer.Shutdown(context.Background())
+	subscriber.Close()
 	dbClient.Disconnect(context.Background())
 }

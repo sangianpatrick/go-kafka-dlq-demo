@@ -64,6 +64,8 @@ github.com/golang/snappy v0.0.3/go.mod h1:/XxbfmMg8lxefKM7IXC3fBNl/7bRcc72aCRzEW
 github.com/google/go-cmp v0.3.1/go.mod h1:8QqcDgzrUqlUb/G2PQTWiueGozuR1884gddMywk6iLU=
 github.com/google/go-cmp v0.5.2/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 github.com/google/go-cmp v0.5.4/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
+github.com/google/uuid v1.2.0 h1:qJYtXnJRWmpe7m/3XlyhrsLrEURqHRM2kxzoxXqyUDs=
+github.com/google/uuid v1.2.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/gorilla/context v1.1.1/go.mod h1:kBGZzfjB9CEq2AlWe17Uuf7NDRt0dE0s8S51q0aT7Yg=
 github.com/gorilla/mux v1.6.2/go.mod h1:1lud6UwP+6orDFRuTfBEV8e9/aOM/c4fVVCaMa2zaAs=
 github.com/gorilla/mux v1.8.0 h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=
@@ -176,8 +178,11 @@ go.elastic.co/apm/module/apmhttp v1.12.0 h1:iSXbited+ouqB58MftpSz61CvGzuarF4+sq+
 go.elastic.co/apm/module/apmhttp v1.12.0/go.mod h1:9ry+uRvkUYdur2TvEuHMmu1stOlYymnrYaGJwO3fCI4=
 go.elastic.co/apm/module/apmlogrus v1.12.0 h1:eGqDkFuZc+2cxLS34lv9lLxWng7gqRD8EGk28Cm0kHM=
 go.elastic.co/apm/module/apmlogrus v1.12.0/go.mod h1:PzmAJbSId8WMpSgR6MOrijq5kQHDQSUUYhkZCEMPBtQ=
+go.elastic.co/apm/module/apmmongo v1.12.0 h1:igrYHF2Oe5HhPvwdjsi4jedUpixUpZXqZa6mhinlhXk=
+go.elastic.co/apm/module/apmmongo v1.12.0/go.mod h1:U8zi+L7O2KAH1ToWyl8LPWK4Zmob0jo+Ld39wfNdY1M=
 go.elastic.co/fastjson v1.1.0 h1:3MrGBWWVIxe/xvsbpghtkFoPciPhOCmjsR/HfwEeQR4=
 go.elastic.co/fastjson v1.1.0/go.mod h1:boNGISWMjQsUPy/t6yqt2/1Wx4YNPSe+mZjlyw9vKKI=
+go.mongodb.org/mongo-driver v1.5.1/go.mod h1:gRXCHX4Jo7J0IJ1oDQyUxF7jfy19UfxniMS4xxMmUqw=
 go.mongodb.org/mongo-driver v1.5.3 h1:wWbFB6zaGHpzguF3f7tW94sVE8sFl3lHx8OZx/4OuFI=
 go.mongodb.org/mongo-driver v1.5.3/go.mod h1:gRXCHX4Jo7J0IJ1oDQyUxF7jfy19UfxniMS4xxMmUqw=
 golang.org/x/crypto v0.0.0-20180904163835-0709b304e793/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=

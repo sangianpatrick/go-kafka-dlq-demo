@@ -7,10 +7,12 @@ import (
 	"github.com/sangianpatrick/go-kafka-dlq-demo/dlq-service/mongodb"
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type DLQRepository interface {
+	InsertOne(ctx context.Context, message entity.Message) (err error)
 	FindMany(ctx context.Context, limit, skip int64) (bunchOfMessage []entity.Message, err error)
 	FindByID(ctx context.Context, ID string) (message entity.Message, err error)
 	DeleteByID(ctx context.Context, ID string) (err error)
@@ -41,6 +43,16 @@ func (r *dlqRepository) CountDocuments(ctx context.Context) (counted int64, err 
 	return
 }
 
+func (r *dlqRepository) InsertOne(ctx context.Context, message entity.Message) (err error) {
+	options := options.InsertOne()
+	if _, err = r.db.Collection(r.collection).InsertOne(ctx, message, options); err != nil {
+		r.logger.Error(err)
+		return
+	}
+
+	return
+}
+
 func (r *dlqRepository) FindMany(ctx context.Context, limit, skip int64) (bunchOfMessage []entity.Message, err error) {
 
 	filter := bson.M{}
@@ -61,6 +73,10 @@ func (r *dlqRepository) FindMany(ctx context.Context, limit, skip int64) (bunchO
 		}
 
 		bunchOfMessage = append(bunchOfMessage, message)
+	}
+
+	if len(bunchOfMessage) < 1 {
+		err = mongo.ErrNoDocuments
 	}
 
 	return
