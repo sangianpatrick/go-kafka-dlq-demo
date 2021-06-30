@@ -4,8 +4,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/Shopify/sarama"
 	eventbus "github.com/sangianpatrick/go-kafka-dlq-demo/dlq-service/eventbus"
 	"github.com/sangianpatrick/go-kafka-dlq-demo/dlq-service/eventbus/mocks"
@@ -13,16 +11,6 @@ import (
 	"github.com/stretchr/testify/mock"
 	"go.elastic.co/apm"
 )
-
-func TestNewSaramaKafkaConsumerGroupFullConfigAdapter_Success(t *testing.T) {
-	subscriber, err := eventbus.NewSaramaKafkaConsumerGroupFullConfigAdapter(
-		logrus.New(), []string{"kafka1.com", "kafka2.com", "kafka3.com"}, "test-group", []string{"test-topic"},
-		eventbus.NewDefaultSaramaConsumerGroupHandler(apm.DefaultTracer, "service-test", &mocks.EventHandler{}, &mocks.DLQHandler{}),
-		sarama.NewConfig(),
-	)
-	assert.Error(t, err)
-	assert.Nil(t, subscriber)
-}
 
 func TestSaramaKafkaConsumserGroupAdapter_Success(t *testing.T) {
 	cgHandler := eventbus.NewDefaultSaramaConsumerGroupHandler(apm.DefaultTracer, "service-test", &mocks.EventHandler{}, &mocks.DLQHandler{})

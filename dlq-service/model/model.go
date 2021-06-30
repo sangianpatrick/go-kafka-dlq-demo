@@ -1,7 +1,5 @@
 package model
 
-import "time"
-
 // MessageHeadersParams is a model.
 type MessageHeadersParams map[string]string
 
@@ -14,5 +12,5 @@ type MessageParams struct {
 	Headers           MessageHeadersParams `json:"headers" validate:"required"`
 	Message           string               `json:"message" validate:"required"`
 	CausedBy          string               `json:"causedBy" validate:"required"`
-	FailedConsumeDate time.Time            `json:"failedConsumeDate" validate:"required"`
+	FailedConsumeDate string               `json:"failedConsumeDate" validate:"required"`
 }

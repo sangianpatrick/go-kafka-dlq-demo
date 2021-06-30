@@ -1,7 +1,5 @@
 package entity
 
-import "time"
-
 // MessageHeaders is an entity.
 type MessageHeaders map[string]string
 
@@ -15,5 +13,5 @@ type Message struct {
 	Headers           MessageHeaders `json:"headers" bson:"headers"`
 	Message           string         `json:"message" bson:"message"`
 	CausedBy          string         `json:"causedBy" bson:"causedBy"`
-	FailedConsumeDate time.Time      `json:"failedConsumeDate" bson:"failedConsumeDate"`
+	FailedConsumeDate string         `json:"failedConsumeDate" bson:"failedConsumeDate"`
 }

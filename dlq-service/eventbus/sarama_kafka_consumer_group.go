@@ -31,34 +31,6 @@ type SaramaKafkaConsumserGroupAdapter struct {
 	config    *SaramaKafkaConsumserGroupAdapterConfig
 }
 
-// NewSaramaKafkaConsumerGroupFullConfigAdapter is constructor that immediately returns subscriber.
-func NewSaramaKafkaConsumerGroupFullConfigAdapter(
-	logger *logrus.Logger, addresses []string, groupID string, topics []string,
-	consumerGroupHandler sarama.ConsumerGroupHandler,
-	saramaConfig *sarama.Config,
-) (subscriber Subscriber, err error) {
-
-	consumerGroupClient, err := sarama.NewConsumerGroup(addresses, groupID, saramaConfig)
-	if err != nil {
-		return
-	}
-
-	closeChan := make(chan struct{}, 1)
-	config := &SaramaKafkaConsumserGroupAdapterConfig{
-		ConsumerGroupClient:  consumerGroupClient,
-		ConsumerGroupHandler: consumerGroupHandler,
-		Topics:               topics,
-	}
-
-	subscriber = &SaramaKafkaConsumserGroupAdapter{
-		closeChan: closeChan,
-		logger:    logger,
-		config:    config,
-	}
-
-	return
-}
-
 // NewSaramaKafkaConsumserGroupAdapter is a constructor
 //
 // This Constructor is deprecated and use `NewSaramaKafkaConsumerGroupFullConfigAdapter` instead.
